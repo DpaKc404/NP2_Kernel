@@ -8,75 +8,75 @@ on:
   workflow_dispatch:
     inputs:
       kernel_repo:
-        description: 'Kernel source repo'
+        description: "Kernel source repo"
         required: false
         type: string
-        default: 'https://github.com/LineageOS/android_kernel_nothing_sm8475.git'
+        default: "https://github.com/LineageOS/android_kernel_nothing_sm8475.git"
       kernel_branch:
-        description: 'Kernel branch'
+        description: "Kernel branch"
         required: false
         type: string
-        default: 'lineage-23.2'
+        default: "lineage-23.2"
       kernel_defconfig:
-        description: 'Defconfig(s), space-separated. Use /name if it is in the kernel root; otherwise arch/arm64/configs/name is used.'
+        description: "Defconfig(s), space-separated. Use /name if it is in the kernel root; otherwise arch/arm64/configs/name is used."
         required: false
         type: string
-        default: 'gki_defconfig'
+        default: "gki_defconfig"
       extra_configs:
-        description: 'Extra config fragments (space-separated, start with / if it is in the kernel root)'
+        description: "Extra config fragments (space-separated, start with / if it is in the kernel root)"
         required: false
         type: string
-        default: 'vendor/waipio_GKI.config vendor/nothing/waipio_GKI.config vendor/debugfs.config'
+        default: "vendor/waipio_GKI.config vendor/nothing/waipio_GKI.config vendor/debugfs.config"
       susfs_support:
-        description: 'Enable SUSFS support'
+        description: "Enable SUSFS support"
         required: false
         type: boolean
         default: true
       susfs_branch:
-        description: 'SUSFS branch (also selects patch name)'
+        description: "SUSFS branch (also selects patch name)"
         required: false
         type: string
-        default: 'gki-android13-5.10'
+        default: "gki-android13-5.10"
       extra_patches_dir:
-        description: 'Extra patch directory (repo-local)'
+        description: "Extra patch directory (repo-local)"
         required: false
         type: string
-        default: ''
+        default: ""
       bbg_support:
-        description: 'Enable BBG support (Warning: May bootloop with ReSukiSU/SUSFS)'
+        description: "Enable BBG support (Warning: May bootloop with ReSukiSU/SUSFS)"
         required: false
         type: boolean
         default: false
       susfs_force:
-        description: 'Force SUSFS patch apply (ignore failures)'
+        description: "Force SUSFS patch apply (ignore failures)"
         required: false
         type: boolean
         default: false
       kernel_type:
-        description: 'Kernel type identifier (arter97, NothingOSS, LineageOS)'
+        description: "Kernel type identifier (arter97, NothingOSS, LineageOS)"
         required: false
         type: string
-        default: 'LineageOS'
+        default: "LineageOS"
 
   workflow_call:
     inputs:
       kernel_repo:
         required: false
         type: string
-        default: 'https://github.com/LineageOS/android_kernel_nothing_sm8475.git'
+        default: "https://github.com/LineageOS/android_kernel_nothing_sm8475.git"
       kernel_branch:
         required: false
         type: string
-        default: 'lineage-23.2'
+        default: "lineage-23.2"
       kernel_defconfig:
-        description: 'Defconfig(s), space-separated. Use /name if it is in the kernel root; otherwise arch/arm64/configs/name is used.'
+        description: "Defconfig(s), space-separated. Use /name if it is in the kernel root; otherwise arch/arm64/configs/name is used."
         required: false
         type: string
-        default: 'gki_defconfig'
+        default: "gki_defconfig"
       extra_configs:
         required: false
         type: string
-        default: 'vendor/waipio_GKI.config vendor/nothing/waipio_GKI.config vendor/debugfs.config'
+        default: "vendor/waipio_GKI.config vendor/nothing/waipio_GKI.config vendor/debugfs.config"
       susfs_support:
         required: false
         type: boolean
@@ -84,11 +84,11 @@ on:
       susfs_branch:
         required: false
         type: string
-        default: 'gki-android13-5.10'
+        default: "gki-android13-5.10"
       extra_patches_dir:
         required: false
         type: string
-        default: ''
+        default: ""
       bbg_support:
         required: false
         type: boolean
@@ -100,7 +100,7 @@ on:
       kernel_type:
         required: false
         type: string
-        default: 'LineageOS'
+        default: "LineageOS"
 
 jobs:
   build:
@@ -135,7 +135,7 @@ jobs:
             build-essential bc bison flex libelf-dev libssl-dev ccache \
             lz4 zip python3 clang llvm lld gcc-aarch64-linux-gnu \
             gcc-arm-linux-gnueabi wget cpio
-          
+
           # Force clang/gcc to pass through ccache via PATH
           sudo mkdir -p /usr/local/bin/ccache-bin
           sudo ln -sf $(which ccache) /usr/local/bin/ccache-bin/clang
@@ -244,7 +244,7 @@ jobs:
           KERNEL_TYPE="${{ inputs.kernel_type || 'LineageOS' }}" Scripts/package_anykernel.sh
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kernel-${{ inputs.kernel_type || 'LineageOS' }}-NP2-ReSukiSU
           path: "kernel-${{ inputs.kernel_type || 'LineageOS' }}-NP2-ReSukiSU.zip"
@@ -252,7 +252,7 @@ jobs:
 
       - name: Upload .config for debugging
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: config-NP2-ReSukiSU
           path: kernel/out/.config
@@ -275,7 +275,7 @@ jobs:
 
       - name: Upload .rej files
         if: always() && steps.collect_rej.outputs.found == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rej-NP2-ReSukiSU
           path: rej/
