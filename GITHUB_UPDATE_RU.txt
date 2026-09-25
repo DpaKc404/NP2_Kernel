@@ -1,0 +1,13 @@
+ПЕРЕНОС ИСПРАВЛЕНИЯ В GITHUB ACTIONS
+
+В архиве уже исправлен workflow для сборки arter97 и есть скрипт Scripts/setup_arter97_toolchain.sh.
+
+Чтобы запускать workflow из ветки arter97:
+1. Распакуйте архив в рабочую копию репозитория NP2_Kernel.
+2. Замените .github/workflows/build.yml и добавьте Scripts/setup_arter97_toolchain.sh.
+3. Закоммитьте и отправьте эти изменения именно в ветку arter97 репозитория NP2_Kernel.
+4. В Actions выберите workflow .github/workflows/build.yml, ветку arter97 и запустите с прежними параметрами ядра (Kernel branch: master).
+
+В ZIP намеренно нет .git: он не нужен для переноса файлов и может направить Git-команды не в ту ветку.
+
+Признак, что запущена новая версия: перед Clone SUSFS в логе появляется шаг Prepare arter97 toolchain. В нём должны быть напечатаны заменённые CROSS_COMPILE и LLVM_PATH.
