@@ -10,6 +10,13 @@ if [[ ! -f "$makefile" ]]; then
   exit 1
 fi
 
+# This workflow is also reused for LineageOS and NothingOSS builds. Detect the
+# upstream arter97 hardcoded toolchain first and leave other kernels untouched.
+if ! grep -qF '/home/arter97/android/nathan/llvm-22.1.0-x86_64/bin/' "$makefile"; then
+  echo "No arter97 hardcoded toolchain detected in $makefile; nothing to change."
+  exit 0
+fi
+
 # Resolve the actual binaries installed by Ubuntu. Prefer versioned LLVM tools
 # so this works even when the runner does not provide unversioned aliases.
 mkdir -p "$tool_dir"

@@ -159,7 +159,6 @@ jobs:
           rm -rf "$ANYKERNEL_DIR/.git"
 
       - name: Prepare arter97 toolchain
-        if: ${{ contains(inputs.kernel_repo || '', 'arter97/android_kernel_nothing_sm8475') }}
         run: |
           chmod +x Scripts/setup_arter97_toolchain.sh
           Scripts/setup_arter97_toolchain.sh "$KERNEL_DIR"
