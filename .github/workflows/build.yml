@@ -240,7 +240,7 @@ jobs:
           KERNEL_TYPE="${{ inputs.kernel_type || 'LineageOS' }}" Scripts/package_anykernel.sh
 
       - name: Upload artifact
-        uses: ${{ github.server_url == 'https://git.miguvt.com' && 'actions/upload-artifact@v3' || 'actions/upload-artifact@v4' }}
+        uses: actions/upload-artifact@v4
         with:
           name: kernel-${{ inputs.kernel_type || 'LineageOS' }}-NP2-ReSukiSU
           path: "kernel-${{ inputs.kernel_type || 'LineageOS' }}-NP2-ReSukiSU.zip"
@@ -248,7 +248,7 @@ jobs:
 
       - name: Upload .config for debugging
         if: always()
-        uses: ${{ github.server_url == 'https://git.miguvt.com' && 'actions/upload-artifact@v3' || 'actions/upload-artifact@v4' }}
+        uses: actions/upload-artifact@v4
         with:
           name: config-NP2-ReSukiSU
           path: kernel/out/.config
@@ -271,7 +271,7 @@ jobs:
 
       - name: Upload .rej files
         if: always() && steps.collect_rej.outputs.found == 'true'
-        uses: ${{ github.server_url == 'https://git.miguvt.com' && 'actions/upload-artifact@v3' || 'actions/upload-artifact@v4' }}
+        uses: actions/upload-artifact@v4
         with:
           name: rej-NP2-ReSukiSU
           path: rej/
