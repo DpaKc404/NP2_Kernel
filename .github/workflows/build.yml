@@ -151,32 +151,6 @@ jobs:
           ccache -M "$CCACHE_MAXSIZE"
           ccache -z
 
-      - name: Setup LLVM toolchain path (arter97 compat)
-        if: ${{ contains(inputs.kernel_repo || '', 'arter97/android_kernel_nothing_sm8475') }}
-        run: |
-          llvm_dir=/home/arter97/android/nathan/llvm-22.1.0-x86_64/bin
-          sudo mkdir -p "$llvm_dir"
-          # arter97's Makefile overrides LLVM_PATH to this exact directory.
-          # Link every requested tool from the installed Ubuntu toolchain;
-          # do not assume unversioned /usr/bin aliases exist on the runner.
-          for tool in clang clang++ llvm-ar llvm-nm llvm-objdump llvm-objcopy llvm-readelf llvm-strip ld.lld; do
-            case "$tool" in
-              clang) candidates=(/usr/bin/clang-*);;
-              clang++) candidates=(/usr/bin/clang++-*);;
-              llvm-*) candidates=("/usr/bin/$tool-"*);;
-              ld.lld) candidates=(/usr/bin/ld.lld-*);;
-            esac
-            src="${candidates[0]}"
-            if [ ! -x "$src" ]; then
-              echo "Required LLVM tool not installed: $tool" >&2
-              exit 1
-            fi
-            sudo ln -sf "$src" "$llvm_dir/$tool"
-          done
-          for tool in clang clang++ llvm-ar llvm-nm llvm-objdump llvm-objcopy llvm-readelf llvm-strip ld.lld; do
-            test -x "$llvm_dir/$tool"
-          done
-
       - name: Clone sources
         run: |
           git clone --depth=1 -b "${{ inputs.kernel_branch || 'lineage-23.2' }}" \
@@ -184,6 +158,12 @@ jobs:
             "$KERNEL_DIR"
           git clone --depth=1 https://github.com/osm0sis/AnyKernel3.git "$ANYKERNEL_DIR"
           rm -rf "$ANYKERNEL_DIR/.git"
+
+      - name: Prepare arter97 toolchain
+        if: ${{ contains(inputs.kernel_repo || '', 'arter97/android_kernel_nothing_sm8475') }}
+        run: |
+          chmod +x Scripts/setup_arter97_toolchain.sh
+          Scripts/setup_arter97_toolchain.sh "$KERNEL_DIR"
 
       - name: Clone SUSFS
         if: ${{ inputs.susfs_support == true }}
